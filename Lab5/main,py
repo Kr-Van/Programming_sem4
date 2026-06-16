@@ -1,0 +1,68 @@
+from abc import ABC, abstractmethod
+
+
+class SecurityDevice(ABC):
+    """Базовый абстрактный класс для всех устройств системы безопасности."""
+
+    @abstractmethod
+    def trigger(self) -> None:
+        """Абстрактный метод для активации тревоги или защитного режима."""
+        pass
+
+
+class Camera(SecurityDevice):
+    """Класс охранной камеры со своей уникальной логикой."""
+
+    def __init__(self, location: str):
+        self.location = location
+
+    def trigger(self) -> None:
+        """Реализация метода: запуск записи видеопотока."""
+        print(f"[КАМЕРА]: Обнаружено движение в локации '{self.location}'. Включена запись Full-HD.")
+
+
+class MotionSensor(SecurityDevice):
+    """Класс инфракрасного датчика движения."""
+
+    def __init__(self, sensitivity: int):
+        self.sensitivity = sensitivity
+
+    def trigger(self) -> None:
+        """Реализация метода: включение сирены при нарушении периметра."""
+        print(f"[ДАТЧИК]: Зафиксировано тепловое излучение (чувствительность {self.sensitivity}%). Включена сирена!")
+
+
+class SmartLock(SecurityDevice):
+    """Класс электронного умного замка."""
+
+    def __init__(self, door_id: int):
+        self.door_id = door_id
+
+    def trigger(self) -> None:
+        """Реализация метода: блокировка дверей."""
+        print(f"[ЗАМОК]: Дверь №{self.door_id} переведена в режим полной экстренной блокировки.")
+
+
+def activate_security_system(devices: list[SecurityDevice]) -> None:
+    """Универсальная функция, демонстрирующая полиморфное поведение.
+
+    Принимает список любых охранных устройств и активирует их.
+    """
+    print("--- АКТИВАЦИЯ ОБЩЕГО РЕЖИМА ТРЕВОГИ ---")
+    for device in devices:
+        # Полиморфный вызов: имя метода одинаковое, но поведение зависит от класса объекта
+        device.trigger()
+
+
+# --- Использование ---
+if __name__ == "__main__":
+    # Создаем объекты совершенно разных классов
+    hall_camera = Camera("Главный холл")
+    window_sensor = MotionSensor(sensitivity=85)
+    main_gate_lock = SmartLock(door_id=101)
+
+    # Помещаем их в единую коллекцию
+    security_perimeter = [hall_camera, window_sensor, main_gate_lock]
+
+    # Передаем в универсальную функцию обработки
+    activate_security_system(security_perimeter)
